@@ -6,7 +6,7 @@ use std::fs::{File, OpenOptions};
 use std::io::Write;
 use std::path::Path;
 
-use chrono::Utc;
+use chrono::Local;
 
 use error::{Error, Result};
 
@@ -30,7 +30,7 @@ byond_fn! { log_close_all()! {
 } }
 
 fn format(data: &str) -> String {
-    format!("[{}] {}\n", Utc::now().format("%F %T%.3f"), data)
+    format!("[{}]{}\n", Local::now().format("%FT%T"), data)
 }
 
 fn write(path: &str, data: String) -> Result<usize> {
