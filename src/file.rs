@@ -1,5 +1,7 @@
 use std::fs::File;
 use std::io::{Read, Write};
+use std::path::Path;
+use std::fs;
 
 use error::Result;
 
@@ -21,7 +23,12 @@ fn read(path: &str) -> Result<String> {
     Ok(content)
 }
 
-fn write(data: &str, path: &str) -> Result<usize> {
+fn write(data: &str, path_str: &str) -> Result<usize> {
+    let path = Path::new(path_str);
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)?
+    }
+
     let mut file = File::create(path)?;
 
     Ok(file.write(data.as_bytes())?)
