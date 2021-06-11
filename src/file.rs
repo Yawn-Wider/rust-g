@@ -1,6 +1,6 @@
 use crate::error::Result;
 use std::{
-    fs::{File, OpenOptions},
+    fs::{File, OpenOptions, create_dir_all},
     io::{Read, Write},
     path::Path
 };
@@ -30,7 +30,7 @@ fn read(path: &str) -> Result<String> {
 fn write(data: &str, path: &str) -> Result<usize> {
     let path = Path::new(path);
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent)?
+        create_dir_all(parent)?
     }
     
     let mut file = File::create(path)?;
