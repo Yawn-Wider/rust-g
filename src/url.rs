@@ -1,6 +1,6 @@
-use percent_encoding::{percent_decode, utf8_percent_encode, PATH_SEGMENT_ENCODE_SET};
-
-use error::{Error, Result};
+use crate::error::Result;
+use std::borrow::Cow;
+use url_dep::form_urlencoded::byte_serialize;
 
 byond_fn! { url_encode(data) {
     Some(encode(data))
@@ -11,17 +11,31 @@ byond_fn! { url_decode(data) {
 } }
 
 fn encode(string: &str) -> String {
-    utf8_percent_encode(string, PATH_SEGMENT_ENCODE_SET).to_string()
+    byte_serialize(string.as_bytes()).collect()
 }
 
 fn decode(string: &str) -> Result<String> {
-    let decoded = percent_decode(string.as_bytes())
-        .decode_utf8()?
-        .into_owned();
+    let replaced = replace_plus(string.as_bytes());
+    // into_owned() is not strictly necessary here, but saves some refactoring work.
+    Ok(percent_encoding::percent_decode(&replaced)
+        .decode_utf8_lossy()
+        .into_owned())
+}
 
-    if decoded.contains('\0') {
-        return Err(Error::Null);
+// From `url` crate.
+/// Replace b'+' with b' '
+fn replace_plus(input: &[u8]) -> Cow<[u8]> {
+    match input.iter().position(|&b| b == b'+') {
+        None => Cow::Borrowed(input),
+        Some(first_position) => {
+            let mut replaced = input.to_owned();
+            replaced[first_position] = b' ';
+            for byte in &mut replaced[first_position + 1..] {
+                if *byte == b'+' {
+                    *byte = b' ';
+                }
+            }
+            Cow::Owned(replaced)
+        }
     }
-
-    Ok(decoded)
 }
