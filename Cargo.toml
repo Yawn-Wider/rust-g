@@ -35,7 +35,7 @@ dashmap = { version = "3.11", optional = true }
 toml = { version = "0.5.8", optional = true }
 
 [features]
-default = ["dmi", "log", "git", "http", "sql", "noise"]
+default = ["dmi", "file", "hash", "log", "url", "git", "http", "sql", "toml2json"]
 dmi = ["png"]
 file = []
 hash = ["crypto-hash", "hex"]
