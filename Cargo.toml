@@ -1,19 +1,47 @@
 [package]
 name = "rust-g"
-version = "0.3.1-vorestation"
+edition = "2018"
+version = "0.4.0-vorestation"
 authors = ["Bjorn Neergaard <bjorn@neersighted.com>"]
+repository = "https://github.com/VOREStation/rust-g"
+license-file = "LICENSE"
+description = "Offloaded task library for the VOREStation SS13 codebase. Adapted from ParadiseSS13"
 
 [lib]
-crate-type = ["lib", "cdylib"]
+crate-type = ["cdylib"]
 
 [profile.release]
 opt-level = 3
+codegen-units = 1
 lto = true
 
 [dependencies]
-chrono = "0.4"
-crypto-hash = "0.3"
 failure = "0.1"
-hex = "0.3"
-percent-encoding = "1.0"
-png = "0.11.0"
+chrono = { version = "0.4", optional = true }
+crypto-hash = { version = "0.3", optional = true }
+hex = { version = "0.4", optional = true }
+percent-encoding = { version = "2.1", optional = true }
+url-dep = { version = "2.1", package = "url", optional = true }
+png = { version = "0.16", optional = true }
+git2 = { version = "0.13", optional = true, default-features = false }
+noise = { version = "0.6", optional = true}
+reqwest = { version = "0.10.8", optional = true, default-features = false, features = ["blocking", "rustls-tls"] }
+serde = { version = "1.0", optional = true }
+serde_json = { version = "1.0", optional = true }
+serde_derive = { version = "1.0", optional = true }
+once_cell = { version = "1.4", optional = true }
+mysql = { version = "19.0", optional = true }
+dashmap = { version = "3.11", optional = true }
+toml = { version = "0.5.8", optional = true }
+
+[features]
+default = ["dmi", "file", "hash", "log", "url", "git", "http", "sql", "toml2json"]
+dmi = ["png"]
+file = []
+hash = ["crypto-hash", "hex"]
+log = ["chrono"]
+url = ["url-dep", "percent-encoding"]
+git = ["git2", "chrono"]
+http = ["reqwest", "serde", "serde_json", "serde_derive", "once_cell"]
+sql = ["mysql", "serde", "serde_derive", "serde_json", "once_cell", "dashmap"]
+toml2json = ["toml", "serde_json"]
