@@ -35,7 +35,7 @@ dashmap = { version = "3.11", optional = true }
 toml = { version = "0.5.8", optional = true }
 
 [features]
-default = ["dmi", "file", "hash", "log", "url", "git", "http", "sql", "toml2json"]
+default = ["dmi", "file", "hash", "log", "url", "git", "http", "sql", "toml2json", "savefile"]
 dmi = ["png"]
 file = []
 hash = ["crypto-hash", "hex"]
@@ -45,3 +45,4 @@ git = ["git2", "chrono"]
 http = ["reqwest", "serde", "serde_json", "serde_derive", "once_cell"]
 sql = ["mysql", "serde", "serde_derive", "serde_json", "once_cell", "dashmap"]
 toml2json = ["toml", "serde_json"]
+savefile = ["serde", "serde_derive", "serde_json"]

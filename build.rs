@@ -161,15 +161,35 @@ fn main() {
 
     // module: sql
     if enabled!("TOML2JSON") {
-        write!(f, r#"
+        write!(
+            f,
+            r#"
 // toml2json stuff //
 #define rustg_toml2json(tomlfile) call(RUST_G, "toml2json")(tomlfile)
-"#).unwrap();
+"#
+        )
+        .unwrap();
+    }
+
+    // module: sql
+    if enabled!("SAVEFILE") {
+        write!(
+            f,
+            r#"
+// savefile ser/de //
+#define rustg_savefile_to_json(save_string) call(RUST_G, "savefile_to_json")(save_string)
+"#
+        )
+        .unwrap();
     }
 
     // Version footer
-    write!(f, "
+    write!(
+        f,
+        "
 // RUSTG Version //
-#define RUST_G_VERSION \"{}\""
-, env!("CARGO_PKG_VERSION")).unwrap();
+#define RUST_G_VERSION \"{}\"",
+        env!("CARGO_PKG_VERSION")
+    )
+    .unwrap();
 }

@@ -8,6 +8,8 @@ use std::{
 #[cfg(feature = "png")]
 use png::{DecodingError, EncodingError};
 
+use crate::savefile::ParseError;
+
 pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Fail, Debug)]
@@ -38,9 +40,12 @@ pub enum Error {
     #[cfg(feature = "http")]
     #[fail(display = "{}", _0)]
     RequestError(#[cause] reqwest::Error),
-    #[cfg(feature = "http")]
+    #[cfg(any(feature = "http", feature = "http"))]
     #[fail(display = "{}", _0)]
     SerializationError(#[cause] serde_json::Error),
+    #[cfg(feature="savefile")]
+    #[fail(display = "{}", _0)]
+    SaveParseError(#[cause] crate::savefile::ParseError),
 }
 
 impl From<io::Error> for Error {
@@ -103,5 +108,12 @@ impl From<Error> for String {
 impl From<Error> for Vec<u8> {
     fn from(error: Error) -> Vec<u8> {
         error.to_string().into_bytes()
+    }
+}
+
+#[cfg(feature = "savefile")]
+impl From<ParseError> for Error {
+    fn from(error: ParseError) -> Error {
+        Error::SaveParseError(error)
     }
 }
