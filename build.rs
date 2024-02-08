@@ -171,7 +171,26 @@ fn main() {
         .unwrap();
     }
 
-    // module: sql
+    // Version footer
+    write!(
+        f,
+        "
+// RUSTG Version //
+#define RUST_G_VERSION \"{}\"",
+        env!("CARGO_PKG_VERSION")
+    )
+    .unwrap();
+
+    // YW Edit - "New YW-Specific rust-g functionality"
+    yw();
+    // YW Edit End
+}
+
+// YW Edit - "Pulled out into our own function to clearly differentiate from upstreams"
+fn yw() {
+    let mut f = File::create("target/rust_g_yw.dm").unwrap();
+
+    // module: savefile
     if enabled!("SAVEFILE") {
         write!(
             f,
@@ -182,14 +201,5 @@ fn main() {
         )
         .unwrap();
     }
-
-    // Version footer
-    write!(
-        f,
-        "
-// RUSTG Version //
-#define RUST_G_VERSION \"{}\"",
-        env!("CARGO_PKG_VERSION")
-    )
-    .unwrap();
 }
+// YW Edit End

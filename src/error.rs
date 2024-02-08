@@ -8,7 +8,7 @@ use std::{
 #[cfg(feature = "png")]
 use png::{DecodingError, EncodingError};
 
-use crate::savefile::ParseError;
+use crate::yw::{savefile::ParseError, YWError}; // YW Edit - "Add YW Errors"
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -40,12 +40,13 @@ pub enum Error {
     #[cfg(feature = "http")]
     #[fail(display = "{}", _0)]
     RequestError(#[cause] reqwest::Error),
-    #[cfg(any(feature = "http", feature = "http"))]
+    #[cfg(any(feature = "http", feature = "savefile"))] // YW Edit - "Savefile also relies on Serde"
     #[fail(display = "{}", _0)]
     SerializationError(#[cause] serde_json::Error),
-    #[cfg(feature="savefile")]
+    // YW Edit - "New YW-Specific rust-g functionality"
     #[fail(display = "{}", _0)]
-    SaveParseError(#[cause] crate::savefile::ParseError),
+    YWError(#[cause] crate::yw::YWError),
+    // YW Edit End
 }
 
 impl From<io::Error> for Error {
@@ -111,9 +112,10 @@ impl From<Error> for Vec<u8> {
     }
 }
 
-#[cfg(feature = "savefile")]
-impl From<ParseError> for Error {
-    fn from(error: ParseError) -> Error {
-        Error::SaveParseError(error)
+// YW Edit - "New YW-Specific rust-g functionality"
+impl From<YWError> for Error {
+    fn from(error: YWError) -> Error {
+        Error::YWError(error)
     }
 }
+// YW Edit End

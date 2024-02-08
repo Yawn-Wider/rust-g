@@ -34,10 +34,7 @@ pub fn tokenize(raw: &str) -> Result<Vec<Token>> {
                 match c {
                     '(' => {
                         if !buf.is_empty() {
-                            if buf.to_lowercase() == "list" {
-                                tokens.push(Token::ListStart);
-                            }
-                            else {
+                            if buf.to_lowercase() != "list" {
                                 tokens.push(Token::Identifier(buf.clone()));
                             }
                             buf.clear();
@@ -63,38 +60,21 @@ pub fn tokenize(raw: &str) -> Result<Vec<Token>> {
                     '=' => tokens.push(Token::Assign),
                     '\t' => tokens.push(Token::Indent),
                     '\n' | '\r' => {
+                        // Deduplicate newlines
                         if tokens.last() != Some(&Token::Newline) {
                             tokens.push(Token::Newline)
                         }
                     }
-                    '"' => {
-                        if !buf.is_empty() {
-                            tokens.push(Token::Identifier(buf.clone()));
-                        }
-                        mode = Mode::String
-                    }
-                    ',' => {
-                        if !buf.is_empty() {
-                            tokens.push(Token::Identifier(buf.clone()));
-                        }
-                        tokens.push(Token::ListSeparator)
-                    }
-                    ')' => {
-                        if !buf.is_empty() {
-                            tokens.push(Token::Identifier(buf.clone()));
-                        }
-                        tokens.push(Token::ListEnd)
-                    }
-                    c if c != '\t' && c.is_whitespace() => {
-                        if !buf.is_empty() {
-                            tokens.push(Token::Identifier(buf.clone()));
-                        }
-                    }
+                    '"' => mode = Mode::String,
+                    ',' => tokens.push(Token::ListSeparator),
+                    '(' => tokens.push(Token::ListStart),
+                    ')' => tokens.push(Token::ListEnd),
+                    c if c != '\t' && c.is_whitespace() => {} // ignore whitespace outside of transition state
                     c => buf.push(c),
                 }
             }
             Mode::String => match c {
-                // Unescaped quote means we 
+                // Unescaped quote means we
                 '"' => {
                     tokens.push(Token::String(buf.clone()));
                     buf.clear();
@@ -124,16 +104,4 @@ pub fn tokenize(raw: &str) -> Result<Vec<Token>> {
     }
 
     Ok(tokens)
-}
-
-#[cfg(test)]
-mod test {
-    use crate::savefile::lexer::tokenize;
-
-    #[test]
-    fn test_tokenizer() {
-        println!("{:#?}", tokenize(TEST_SAVE_DATA))
-    }
-
-    const TEST_SAVE_DATA: &str = include_str!("./sample_save.txt");
 }

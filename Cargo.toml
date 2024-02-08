@@ -45,4 +45,6 @@ git = ["git2", "chrono"]
 http = ["reqwest", "serde", "serde_json", "serde_derive", "once_cell"]
 sql = ["mysql", "serde", "serde_derive", "serde_json", "once_cell", "dashmap"]
 toml2json = ["toml", "serde_json"]
+# YW Edit - "New YW-Specific rust-g functionality"
 savefile = ["serde", "serde_derive", "serde_json"]
+# YW Edit End

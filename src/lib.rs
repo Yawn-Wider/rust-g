@@ -51,8 +51,10 @@ pub mod sql;
 pub mod url;
 #[cfg(feature = "toml2json")]
 pub mod toml2json;
-#[cfg(feature = "savefile")]
-pub mod savefile;
+
+// YW Edit - "New YW-Specific rust-g functionality"
+pub mod yw;
+// YW Edit End
 
 #[cfg(not(target_pointer_width = "32"))]
 compile_error!("rust-g must be compiled for a 32-bit target");
