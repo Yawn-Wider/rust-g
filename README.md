@@ -3,7 +3,7 @@
 rust-g (pronounced rusty-g) is a library which offloads certain expensive or
 difficult tasks from BYOND.
 
-This library is currently used in the VOREStation codebase, and is required for
+This library is currently used in the Yawn-Wider/YWPolarisVore codebase and is a fork of VOREStation/rust-g, and is required for
 it to run. A pre-compiled DLL version can be found in the repo root, but you
 can build your own from this repo at your preference. Builds can also be found
 on the [releases page].
