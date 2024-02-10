@@ -17,10 +17,10 @@ extern crate percent_encoding;
 extern crate png;
 #[cfg(feature = "http")]
 extern crate reqwest;
-#[cfg(any(feature = "http", feature = "sql"))]
+#[cfg(any(feature = "http", feature = "sql", feature = "savefile"))]
 #[macro_use]
 extern crate serde_derive;
-#[cfg(any(feature = "http", feature = "sql"))]
+#[cfg(any(feature = "http", feature = "sql", feature = "savefile"))]
 extern crate serde_json;
 #[cfg(feature = "sql")]
 extern crate mysql;
@@ -51,6 +51,10 @@ pub mod sql;
 pub mod url;
 #[cfg(feature = "toml2json")]
 pub mod toml2json;
+
+// YW Edit - "New YW-Specific rust-g functionality"
+pub mod yw;
+// YW Edit End
 
 #[cfg(not(target_pointer_width = "32"))]
 compile_error!("rust-g must be compiled for a 32-bit target");

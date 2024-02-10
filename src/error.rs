@@ -8,6 +8,8 @@ use std::{
 #[cfg(feature = "png")]
 use png::{DecodingError, EncodingError};
 
+use crate::yw::{savefile::ParseError, YWError}; // YW Edit - "Add YW Errors"
+
 pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Fail, Debug)]
@@ -38,9 +40,13 @@ pub enum Error {
     #[cfg(feature = "http")]
     #[fail(display = "{}", _0)]
     RequestError(#[cause] reqwest::Error),
-    #[cfg(feature = "http")]
+    #[cfg(any(feature = "http", feature = "savefile"))] // YW Edit - "Savefile also relies on Serde"
     #[fail(display = "{}", _0)]
     SerializationError(#[cause] serde_json::Error),
+    // YW Edit - "New YW-Specific rust-g functionality"
+    #[fail(display = "{}", _0)]
+    YWError(#[cause] crate::yw::YWError),
+    // YW Edit End
 }
 
 impl From<io::Error> for Error {
@@ -105,3 +111,11 @@ impl From<Error> for Vec<u8> {
         error.to_string().into_bytes()
     }
 }
+
+// YW Edit - "New YW-Specific rust-g functionality"
+impl From<YWError> for Error {
+    fn from(error: YWError) -> Error {
+        Error::YWError(error)
+    }
+}
+// YW Edit End

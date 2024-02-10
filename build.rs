@@ -161,15 +161,45 @@ fn main() {
 
     // module: sql
     if enabled!("TOML2JSON") {
-        write!(f, r#"
+        write!(
+            f,
+            r#"
 // toml2json stuff //
 #define rustg_toml2json(tomlfile) call(RUST_G, "toml2json")(tomlfile)
-"#).unwrap();
+"#
+        )
+        .unwrap();
     }
 
     // Version footer
-    write!(f, "
+    write!(
+        f,
+        "
 // RUSTG Version //
-#define RUST_G_VERSION \"{}\""
-, env!("CARGO_PKG_VERSION")).unwrap();
+#define RUST_G_VERSION \"{}\"",
+        env!("CARGO_PKG_VERSION")
+    )
+    .unwrap();
+
+    // YW Edit - "New YW-Specific rust-g functionality"
+    yw();
+    // YW Edit End
 }
+
+// YW Edit - "Pulled out into our own function to clearly differentiate from upstreams"
+fn yw() {
+    let mut f = File::create("target/rust_g_yw.dm").unwrap();
+
+    // module: savefile
+    if enabled!("SAVEFILE") {
+        write!(
+            f,
+            r#"
+// savefile ser/de //
+#define rustg_savefile_to_json(save_string) call(RUST_G, "savefile_to_json")(save_string)
+"#
+        )
+        .unwrap();
+    }
+}
+// YW Edit End

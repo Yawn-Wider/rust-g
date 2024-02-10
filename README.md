@@ -104,6 +104,13 @@ Additional features are:
 * file: Faster replacements for `file2text` and `text2file`.
 * hash: Faster replacement for `md5`, support for SHA-1, SHA-256, and SHA-512. Requires OpenSSL on Linux.
 
+If you get an error similar to, `run pkg_config fail: "pkg-config has not been configured to support cross-compilation.`,
+and you are *sure* you have installed all the prerequisites, try building with
+
+```
+PKG_CONFIG_SYSROOT_DIR=/ cargo build --release
+```
+
 ## Installing
 
 The rust-g binary (`rust_g.dll` or `librust_g.so`) should be placed in the root
